@@ -30,7 +30,7 @@ def train_model():
     (x_train, y_train), (x_test, y_test) = load_data()
     model = build_model()
     model.fit(x_train, y_train, epochs=10, validation_split=0.2)
-    model.save('../models/my_model.keras') 
+    model.save('../models/my_model.keras')
 
 if __name__ == '__main__':
     train_model()

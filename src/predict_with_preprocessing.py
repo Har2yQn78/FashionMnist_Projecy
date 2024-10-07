@@ -1,58 +1,59 @@
-import tensorflow as tf
 import numpy as np
+import tensorflow as tf
+from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
-import argparse
-import os
 import matplotlib.pyplot as plt
+import argparse
 
-class_names = [
-    "T-shirt/top",
-    "Trouser",
-    "Pullover",
-    "Dress",
-    "Coat",
-    "Sandal",
-    "Shirt",
-    "Sneaker",
-    "Bag",
-    "Ankle boot"
-]
+# Load the models
+color_model = load_model(r'C:\Users\HARRY\Desktop\FashionMNIST_Project\models\my_model_color.keras')
+clothing_model = load_model(r'C:\Users\HARRY\Desktop\FashionMNIST_Project\models\my_model.keras')
 
-def load_model(model_path):
-    return tf.keras.models.load_model(model_path)
+# Define class names
+color_classes = ['black', 'blue', 'brown', 'green', 'grey', 'orange', 'red', 'violet', 'white', 'yellow']
+clothing_classes = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat', 'Sandal', 'Shirt', 'Sneaker', 'Bag',
+                    'Ankle boot']
 
-def preprocess_image(img_path, target_size=(28, 28)):
-    img = image.load_img(img_path, target_size=target_size, color_mode='grayscale')
+
+def preprocess_image(img_path, target_size):
+    img = image.load_img(img_path, target_size=target_size)
     img_array = image.img_to_array(img)
-    img_array = np.expand_dims(img_array, axis=0) / 255.0
+    img_array = np.expand_dims(img_array, axis=0)
+    img_array /= 255.0
     return img_array
 
-def predict(model, img_array):
-    predictions = model.predict(img_array)
-    return np.argmax(predictions), predictions
 
-def visualize_prediction(img_path, prediction, class_name):
-    # Load the original image
-    original_img = image.load_img(img_path)
-    plt.imshow(original_img)
-    plt.title(f'Predicted: {class_name} (Class: {prediction})')
-    plt.axis('off')
-    plt.show()
+def predict(img_path):
+    # Preprocess image for color detection model
+    color_img_array = preprocess_image(img_path, target_size=(64, 64))
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Predict Fashion MNIST class.')
-    parser.add_argument('--img_path', type=str, required=True, help='Path to the image to be predicted.')
-    parser.add_argument('--model_path', type=str, default='../models/my_model.keras', help='Path to the saved model file.')
+    # Predict color
+    color_pred = color_model.predict(color_img_array)
+    color_class = np.argmax(color_pred)
+    color_name = color_classes[color_class]
+
+    # Preprocess image for clothing model
+    clothing_img_array = preprocess_image(img_path, target_size=(28, 28))
+
+    # Predict clothing item
+    clothing_pred = clothing_model.predict(clothing_img_array)
+    clothing_class = np.argmax(clothing_pred)
+    clothing_name = clothing_classes[clothing_class]
+
+    return color_name, clothing_name
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Predict color and clothing item.')
+    parser.add_argument('--img_path', type=str, required=True, help='Path to the image file')
     args = parser.parse_args()
 
-    if not os.path.exists(args.img_path):
-        print(f"Image file {args.img_path} does not exist.")
-    elif not os.path.exists(args.model_path):
-        print(f"Model file {args.model_path} does not exist.")
-    else:
-        model = load_model(args.model_path)
-        img_array = preprocess_image(args.img_path)
-        prediction, predictions = predict(model, img_array)
-        class_name = class_names[prediction]
-        print(f'Predicted class: {prediction}, Class name: {class_name}')
-        visualize_prediction(args.img_path, prediction, class_name)
+    color, clothing = predict(args.img_path)
+    print(f"Predicted color: {color}")
+    print(f"Predicted clothing item: {clothing}")
+
+    # Visualization
+    img = image.load_img(args.img_path)
+    plt.imshow(img)
+    plt.title(f"Color: {color}, Item: {clothing}")
+    plt.show()
