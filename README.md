@@ -5,11 +5,20 @@ This project trains a neural network to classify images from the Fashion MNIST d
 ## Project Structure
 
 Fashion_MNIST_Project/ 
+├── data/
+│  └── Fashion_Mnist_data
+│  └── color_data
 ├── models/
 │  └── my_model.keras 
-├── src/ │ 
+│  └── my_model_color.keras 
+├── notebook/
+│  └── color_classification.ipynb
+│  └── Fashion_mnist_classification.ipynb
+├── src/ 
 │  ├── train.py │ 
-│  ├── predict_with_preprocessing.py │ 
+│  ├── predict_clothes_and_color.py 
+│  ├── predict_clothes.py 
+│  ├── predict_color.py 
 │  ├── utils.py │ └── data/ 
 ├── requirements.txt 
 ├── README.md 
