@@ -38,7 +38,8 @@ This will train the model, save it to the models directory
 
 To make a prediction on a new image, use the predict_with_preprocessing.py script:
 ```
-python src/predict_with_preprocessing.py --img_path path_to_your_image --model_path models/my_model.keras
+python src/predict_clothes_and_color.py --img_path path/to/your/image.jpg --clothes_model_path models/my_model.keras --color_model_path models/my_model_color.keras
+
 ```
 Replace path_to_your_image with the path to the image you want to predict
 
