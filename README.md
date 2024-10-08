@@ -36,11 +36,20 @@ To train the model, run the train.py script:
 ```
 This will train the model, save it to the models directory
 
-To make a prediction on a new image, use the predict_with_preprocessing.py script:
+To make a prediction on a new image, use the predict_clothes_and_color.py script:
 ```
 python src/predict_clothes_and_color.py --img_path path/to/your/image.jpg --clothes_model_path models/my_model.keras --color_model_path models/my_model_color.keras
 
 ```
+To make a prediction on a new image (just predict the clothes), use the predict_clothes.py scripts:
+```
+python src/predict_clothes.py --img_path path/to/your/image.jpg --model_path models/my_model.keras
+```
+To make a prediction on a new image (just predict the color), use the predict_color.py scripts:
+```
+python src/predict_color.py --img_path path/to/your/image.jpg --model_path models/my_model_color.keras
+```
+
 Replace path_to_your_image with the path to the image you want to predict
 
 This project is licensed under the MIT License - see the LICENSE file for details.
